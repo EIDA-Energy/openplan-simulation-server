@@ -51,22 +51,22 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push simulation server
-        id: docker_build
+        id: docker_build_mvs
         uses: docker/build-push-action@v3
         with:
-          context: ./
-          file: ./task_queue/Dockerfile
+          context: ./task_queue
+          file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: eidaenrgy/openplan-simulation-server:${{env.IMAGE_TAG}}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-      - name: Build and push API 
-        id: docker_build_cron
+      - name: Build and push API
+        id: docker_build_API
         uses: docker/build-push-action@v3
         with:
-          context: ./
-          file: ./fastapi_app/Dockerfile
+          context: ./fastapi_app
+          file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: eidaenrgy/API-openplan-simulation-server:${{env.IMAGE_TAG}}
