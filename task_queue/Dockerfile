@@ -12,8 +12,8 @@ RUN apt-get update && \
     apt-get install coinor-cbc -y && \
     apt-get install graphviz -y
 
-COPY requirements.txt .
-
+COPY requirements.txt ./
+RUN dir -s 
 RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
 # install multi-vector-simulator's version pinned in docker-compose.yml file
