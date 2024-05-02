@@ -1,10 +1,10 @@
 # This is a basic workflow to help you get started with Actions
 env:
   GITHUB_CONTAINER_REGISTRY: "eidaenrgy" # set this to the name of your container registry
-  PROJECT_NAME: "openplan-simulation-server"       # set this to your projects name
-  RESOURCE_GROUP: "eida"                 # set this to the resource group containing your AKS cluster
-  CLUSTER_NAME: "eida"                   # set this to the name of your AKS cluster
-  REGISTRY_URL: "docker.io"              # set this to the URL of your registry
+  PROJECT_NAME: "openplan-simulation-server" # set this to your projects name
+  RESOURCE_GROUP: "eida" # set this to the resource group containing your AKS cluster
+  CLUSTER_NAME: "eida" # set this to the name of your AKS cluster
+  REGISTRY_URL: "docker.io" # set this to the URL of your registry
   SECRET: "dorsecret"
   NAMESPACE: "mvs"
   IMAGE_TAG: ${{ github.sha }}
@@ -12,7 +12,7 @@ env:
   #CHART_PATH: MY_HELM_FILE                   # set this to the path to your helm file
   #CHART_OVERRIDE_PATH: MY_OVERRIDE_FILES     # set this to an array of override file paths
 
-# The secret repo eida-secrets is used in the deployment.yaml. 
+# The secret repo eida-secrets is used in the deployment.yaml.
 # Must be manually ran because of secrets
 
 name: Build MVS
@@ -32,86 +32,77 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-   runs-on: ubuntu-latest
-   steps:
-     -
-       name: Checkout
-       uses: actions/checkout@v3
-     -      
-       name: Set up Docker Buildx
-       id: buildx
-       uses: docker/setup-buildx-action@v2
-     -    
-       name: Cache Docker layers
-       uses: actions/cache@v2
-       with:
-         path: /tmp/.buildx-cache
-         key: ${{ runner.os }}-buildx-${{ github.sha }}
-         restore-keys: |
-           ${{ runner.os }}-buildx-
-     -
-       uses: docker/login-action@v2
-       with:
-         username: ${{ secrets.DOCKER_USERNAME }}
-         password: ${{ secrets.DOCKER_PASSWORD }}
-     -
-       name: Build and push
-       id: docker_build
-       uses: docker/build-push-action@v3
-       with:
-         context: ./
-         file: ./task_queue/Dockerfile
-         builder: ${{ steps.buildx.outputs.name }}
-         push: true
-         tags: eidaenrgy/openplan-simulation-server:${{env.IMAGE_TAG}}
-         cache-from: type=local,src=/tmp/.buildx-cache
-         cache-to: type=local,dest=/tmp/.buildx-cache
-     -
-       name: Build and push cron
-       id: docker_build_cron
-       uses: docker/build-push-action@v3
-       with:
-         context: ./
-         file: ./fastapi_app/Dockerfile
-         builder: ${{ steps.buildx.outputs.name }}
-         push: true
-         tags: eidaenrgy/API-openplan-simulation-server:${{env.IMAGE_TAG}}
-         cache-from: type=local,src=/tmp/.buildx-cache
-         cache-to: type=local,dest=/tmp/.buildx-cache
-     -
-       name: Image digest
-       run: echo ${{ steps.docker_build.outputs.digest }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          context: ./
+          file: ./task_queue/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: eidaenrgy/openplan-simulation-server:${{env.IMAGE_TAG}}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+      - name: Build and push cron
+        id: docker_build_cron
+        uses: docker/build-push-action@v3
+        with:
+          context: ./
+          file: ./fastapi_app/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: eidaenrgy/API-openplan-simulation-server:${{env.IMAGE_TAG}}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
 
-     - 
-      name: Azure Login
-      uses: azure/login@v1.4.3
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Azure Login
+        uses: azure/login@v1.4.3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-     - 
-      name: Gets K8s context
-      uses: azure/aks-set-context@v3
-      with:
+      - name: Gets K8s context
+        uses: azure/aks-set-context@v3
+        with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           resource-group: ${{ env.RESOURCE_GROUP }}
           cluster-name: ${{ env.CLUSTER_NAME }}
-      id: login
-     -
-      name: Setup kubectl
-      uses: azure/setup-kubectl@v3
-# Create namespace if doesn't exist
-     - run: |
-        kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o json | kubectl apply -f -
-     - 
-      uses: azure/k8s-deploy@v3.1
-      with:
-        manifests: |
-          ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/elhub-deployment.yaml
-          ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/elhub-service.yaml
-          ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/elhub-cronjob.yaml
-        images: |
-          eidaenrgy/openplan-simulation-server:${{env.IMAGE_TAG}}
-          eidaenrgy/API-openplan-simulation-server:${{env.IMAGE_TAG}}
-        imagepullsecrets: |
-          ${{ env.SECRET }}
-        namespace: ${{ env.NAMESPACE }}
+        id: login
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+      # Create namespace if doesn't exist
+      - run: |
+          kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o json | kubectl apply -f -
+      - uses: azure/k8s-deploy@v3.1
+        with:
+          manifests: |
+            ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/redis-deployment.yaml
+            ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/web-deployment.yaml
+            ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/web-service.yaml
+            ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/worker-dev-deployment.yaml
+            ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/worker-open-plan-deployment.yaml
+          images: |
+            eidaenrgy/openplan-simulation-server:${{env.IMAGE_TAG}}
+            eidaenrgy/API-openplan-simulation-server:${{env.IMAGE_TAG}}
+          imagepullsecrets: |
+            ${{ env.SECRET }}
+          namespace: ${{ env.NAMESPACE }}
