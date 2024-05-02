@@ -50,7 +50,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and push
+      - name: Build and push simulation server
         id: docker_build
         uses: docker/build-push-action@v3
         with:
@@ -61,7 +61,7 @@ jobs:
           tags: eidaenrgy/openplan-simulation-server:${{env.IMAGE_TAG}}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-      - name: Build and push cron
+      - name: Build and push API 
         id: docker_build_cron
         uses: docker/build-push-action@v3
         with:
