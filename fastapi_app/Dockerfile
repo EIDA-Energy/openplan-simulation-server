@@ -23,7 +23,7 @@ USER appuser
 WORKDIR /fastapi_app
 
 RUN python -m pip install --upgrade pip
-RUN pip install -r /requirements.txt
+RUN pip install -r requirements.txt
 
 # expose the app port
 EXPOSE 5001
