@@ -12,10 +12,10 @@ RUN apt-get update && \
     apt-get install coinor-cbc -y && \
     apt-get install graphviz -y
 
-COPY requirements.txt /tmp/
+COPY requirements.txt .
 
 RUN python -m pip install --upgrade pip
-RUN pip install -r /tmp/requirements.txt
+RUN pip install -r requirements.txt
 # install multi-vector-simulator's version pinned in docker-compose.yml file
 # RUN pip install multi-vector-simulator==$MVS_VERSION importlib-metadata==4.13.0 pyomo==5.7.2
 
