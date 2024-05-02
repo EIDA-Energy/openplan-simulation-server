@@ -5,11 +5,11 @@ ARG mvs_version
 ENV CELERY_BROKER_URL redis://redis:6379/0
 ENV CELERY_RESULT_BACKEND redis://redis:6379/0
 
-COPY requirements.txt /tmp/
+COPY requirements.txt ./
 
 # install requirements
 RUN python -m pip install --upgrade pip
-RUN pip install -r /tmp/requirements.txt
+RUN pip install -r /requirements.txt
 # install multi-vector-simulator's version pinned in docker-compose.yml file
 # RUN pip install multi-vector-simulator==$mvs_version gunicorn
 
