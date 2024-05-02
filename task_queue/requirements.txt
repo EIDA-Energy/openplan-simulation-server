@@ -2,3 +2,6 @@ celery
 flower
 redis
 python-multipart
+multi-vector-simulator==1.1.0
+pyomo==6.6.2
+importlib-metadata==4.13.0

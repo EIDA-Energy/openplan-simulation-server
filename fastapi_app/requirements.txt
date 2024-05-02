@@ -5,3 +5,5 @@ uvicorn
 celery
 redis
 python-multipart
+multi-vector-simulator==1.1.0
+gunicorn
