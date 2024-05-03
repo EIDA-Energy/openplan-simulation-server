@@ -21,9 +21,9 @@ spec:
             - name: MVS_DEV_VERSION
               value: 1.1.0
             - name: CELERY_BROKER_URL
-              value: redis.mvs.svc.cluster.local
+              value: http://redis.mvs.svc.cluster.local
             - name: CELERY_RESULT_BACKEND
-              value: redis.mvs.svc.cluster.local
+              value: http://redis.mvs.svc.cluster.local
       restartPolicy: Always
 
 ---

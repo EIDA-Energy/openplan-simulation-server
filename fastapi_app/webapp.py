@@ -45,7 +45,8 @@ app.mount(
 templates = Jinja2Templates(directory=os.path.join(SERVER_ROOT, "templates"))
 
 print(MVS_SERVER_VERSIONS)
-print(CELERY_BROKER_URL, CELERY_RESULT_BACKEND)
+print(CELERY_BROKER_URL)
+print(CELERY_RESULT_BACKEND)
 
 
 # option for routing `@app.X` where `X` is one of
