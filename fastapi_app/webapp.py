@@ -23,6 +23,11 @@ MVS_OPEN_PLAN_VERSION = os.environ.get("MVS_OPEN_PLAN_VERSION", mvs_version.vers
 
 MVS_SERVER_VERSIONS = {"dev": MVS_DEV_VERSION, "open_plan": MVS_OPEN_PLAN_VERSION}
 
+CELERY_BROKER_URL = (os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379"),)
+CELERY_RESULT_BACKEND = os.environ.get(
+    "CELERY_RESULT_BACKEND", "redis://localhost:6379"
+)
+
 try:
     from worker import app as celery_app
 except ModuleNotFoundError:
@@ -38,6 +43,9 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory=os.path.join(SERVER_ROOT, "templates"))
+
+print(MVS_SERVER_VERSIONS)
+print(CELERY_BROKER_URL, CELERY_RESULT_BACKEND)
 
 
 # option for routing `@app.X` where `X` is one of

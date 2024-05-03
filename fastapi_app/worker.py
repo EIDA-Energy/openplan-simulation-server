@@ -7,6 +7,8 @@ CELERY_RESULT_BACKEND = os.environ.get(
     "CELERY_RESULT_BACKEND", "redis://localhost:6379"
 )
 
+print()
+
 # this will be linked to task_queue/tasks.py
 app = Celery("tasks", broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND)
 app.conf.task_queues = (
