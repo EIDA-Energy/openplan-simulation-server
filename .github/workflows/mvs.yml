@@ -97,7 +97,6 @@ jobs:
           manifests: |
             ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/redis-deployment.yaml
             ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/web-deployment.yaml
-            ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/web-service.yaml
             ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/worker-dev-deployment.yaml
             ${{ github.workspace }}/manifests/${{ env.NAMESPACE }}/worker-open-plan-deployment.yaml
           images: |
