@@ -1,35 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert
-    kompose.version: 1.31.2 (a92241f79)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: worker-dev
   name: worker-dev
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: worker-dev
-  strategy: {}
+      app: worker-dev
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert
-        kompose.version: 1.31.2 (a92241f79)
-      creationTimestamp: null
       labels:
-        io.kompose.network/openplan-simulation-server-sim-network: "true"
-        io.kompose.service: worker-dev
+        app: worker-dev
     spec:
       containers:
-        - env:
+        - name: worker-dev
+          image: "eidaenrgy/openplan-simulation-server:latest"
+          env:
             - name: CELERY_TASK_NAME
               value: dev
-          image: "eidaenrgy/openplan-simulation-server:latest"
-          name: worker-dev
-          resources: {}
+            - name: MVS_DEV_VERSION
+              value: 1.1.0
+            - name: CELERY_BROKER_URL
+              value: redis.mvs.svc.cluster.local
+            - name: CELERY_RESULT_BACKEND
+              value: redis.mvs.svc.cluster.local
       restartPolicy: Always
-status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-dev
+spec:
+  selector:
+    app: worker-dev
+  ports:
+    - protocol: TCP
+      port: 5002 # Assuming the port used by worker-dev
+      targetPort: 5002
+  type: ClusterIP
