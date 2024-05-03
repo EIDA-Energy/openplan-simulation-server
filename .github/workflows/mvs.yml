@@ -54,7 +54,7 @@ jobs:
         id: docker_build_mvs
         uses: docker/build-push-action@v3
         with:
-          context: ./task_queue
+          context: task_queue
           file: Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
@@ -65,7 +65,7 @@ jobs:
         id: docker_build_API
         uses: docker/build-push-action@v3
         with:
-          context: ./fastapi_app
+          context: fastapi_app
           file: Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
