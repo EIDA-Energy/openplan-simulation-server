@@ -26,6 +26,6 @@ USER appuser
 WORKDIR /queue
 RUN dir -s 
 RUN python -m pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --user
 
 ENTRYPOINT celery -A tasks worker --loglevel=info --queues=$CELERY_TASK_NAME
