@@ -28,4 +28,7 @@ RUN dir -s
 RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt --user
 
+# Add the directory to PATH
+ENV PATH="/home/appuser/.local/bin:${PATH}"
+
 ENTRYPOINT celery -A tasks worker --loglevel=info --queues=$CELERY_TASK_NAME

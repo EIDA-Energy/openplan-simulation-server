@@ -25,6 +25,9 @@ WORKDIR /fastapi_app
 RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt --user
 
+# Add the directory to PATH
+ENV PATH="/home/appuser/.local/bin:${PATH}"
+
 # expose the app port
 EXPOSE 5001
 
