@@ -54,8 +54,8 @@ jobs:
         id: docker_build_mvs
         uses: docker/build-push-action@v3
         with:
-          context: task_queue
-          file: Dockerfile
+          context: ./
+          file: ./task_queue/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: eidaenrgy/openplan-simulation-server:${{env.IMAGE_TAG}}
@@ -65,8 +65,8 @@ jobs:
         id: docker_build_API
         uses: docker/build-push-action@v3
         with:
-          context: fastapi_app
-          file: Dockerfile
+          context: ./
+          file: ./fastapi_app/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: eidaenrgy/api-openplan-simulation-server:${{env.IMAGE_TAG}}

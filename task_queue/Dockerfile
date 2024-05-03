@@ -13,7 +13,7 @@ RUN apt-get update && \
     apt-get install graphviz -y
 
 
-COPY . /queue
+COPY task_queue/ /queue
 
 # avoid running as root user
 RUN useradd --create-home appuser

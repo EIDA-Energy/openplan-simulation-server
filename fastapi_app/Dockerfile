@@ -7,7 +7,7 @@ ENV CELERY_RESULT_BACKEND redis://redis:6379/0
 
 RUN apt-get update
 
-COPY . /fastapi_app
+COPY fastapi_app/ /fastapi_app
 
 # avoid running as root user
 RUN useradd --create-home appuser
