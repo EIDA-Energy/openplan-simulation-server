@@ -12,9 +12,6 @@ RUN apt-get update && \
     apt-get install coinor-cbc -y && \
     apt-get install graphviz -y
 
-# COPY requirements.txt ./
-# install multi-vector-simulator's version pinned in docker-compose.yml file
-# RUN pip install multi-vector-simulator==$MVS_VERSION importlib-metadata==4.13.0 pyomo==5.7.2
 
 COPY . /queue
 
@@ -24,11 +21,17 @@ RUN chown -R appuser /queue
 USER appuser
 
 WORKDIR /queue
-RUN dir -s 
+
+RUN ls -la
+
 RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt --user
 
 # Add the directory to PATH
 ENV PATH="/home/appuser/.local/bin:${PATH}"
+# Print the contents of the PATH for debugging
+RUN echo $PATH
+# Print the contents of the PYTHONPATH for debugging
+RUN echo $PYTHONPATH
 
 ENTRYPOINT celery -A tasks worker --loglevel=info --queues=$CELERY_TASK_NAME
